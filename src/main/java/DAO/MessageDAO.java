@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MessageDAO {
 
-    public List<Message>getMessageByID(int id){
+    public List<Message>getMessageByUserId(int id){
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
         
