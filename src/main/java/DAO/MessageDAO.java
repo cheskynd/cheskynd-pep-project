@@ -74,11 +74,59 @@ public class MessageDAO {
 
     }
 
-    // TODO: Create a function to delete messages by ID
+    public void deleteMessageById(int id){
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "DELETE from message where message_id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            int rowsAffected = ps.executeUpdate();
+            System.out.println("Rows Affected: " + rowsAffected);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    } 
 
-    // TODO: Delete message by ID
+    public Message updateMessageById(int id, String newMessage){
 
-    // TODO: update message by ID
+        if (newMessage == null || newMessage.length() > 255){
+            return null;
+        }
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+                String sql = "SELECT * FROM message where message_id = ?";
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()){
+                    String newSql = "Update message set message_text = ? where message_id = ?";
+                    PreparedStatement newps = connection.prepareStatement(newSql);
+                    newps.setString(1, newMessage);
+                    newps.setInt(2, id);
+                    int rowsAffected = newps.executeUpdate();
+
+                    if (rowsAffected >= 1){
+
+                        int message_id = rs.getInt("message_id");
+                        int posted_by = rs.getInt("posted_by");
+                        long time_posted_epoch = rs.getLong("time_posted_epoch");
+                        
+                        Message updatedMesaged = new Message();
+                        updatedMesaged.setMessage_id(message_id);
+                        updatedMesaged.setMessage_text(newMessage);
+                        updatedMesaged.setPosted_by(posted_by);
+                        updatedMesaged.setTime_posted_epoch(time_posted_epoch);
+                        return updatedMesaged;
+                }
+            }
+            
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    } 
+
 
 
     
