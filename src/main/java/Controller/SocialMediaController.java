@@ -77,20 +77,19 @@ public class SocialMediaController {
 
     private void createMessage(Context context){
         Message message = context.bodyAsClass(Message.class);
-        int messageLength = message.message_text.length();
 
-        if(message != null && messageLength > 255){
+        if(message != null && message.getMessage_text().length() > 255 && !message.getMessage_text().isBlank()){
 
-            int postedByCount = mService.getPostedByCount(messageLength);
+            int postedByCount = mService.getPostedByCount(message.getPosted_by());
+
             if(postedByCount > 0){
                 Message newMessage = mService.insertMessage(message);
-                context.json(newMessage);
-                context.status(200);
-
-            }}else{context.status(400);}
-            
-
-
+                if(newMessage != null){
+                    context.json(newMessage);
+                    context.status(200);}
+                else{context.status(400);}
+            }else{context.status(400);}
+        }else{context.status(400);}
     }
     
     private void deleteMessage(Context context){
