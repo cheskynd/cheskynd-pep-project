@@ -130,13 +130,13 @@ public class SocialMediaController {
         if (existingMessage != null) { 
             Message Nmessage = context.bodyAsClass(Message.class); 
             String newMessageText = Nmessage.getMessage_text(); 
-            if (!newMessageText.isBlank() && newMessageText.length() <= 255) { 
+            if (!newMessageText.isBlank() && newMessageText.length() < 255) { 
                 Message updatedMessage = mService.updateMessage(message_id, newMessageText); 
                 if (updatedMessage != null) { context.json(updatedMessage);
                      context.status(200); } 
                     else { context.status(400); } 
-                } 
-                else { context.status(400); } 
+                } else { context.status(400); }
+
             } 
                 else { context.status(400); } 
             }
