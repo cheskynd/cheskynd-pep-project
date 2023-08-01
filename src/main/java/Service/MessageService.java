@@ -28,8 +28,8 @@ public class MessageService {
     }
 
 
-    public Message updateMessage(Message message){
-        return messageDAO.updateMessageById(message.getMessage_id(), message.getMessage_text());
+    public Message updateMessage(int id, String message){
+        return messageDAO.updateMessageById(id, message);
     }
 
     public Message getMessageById(int id){

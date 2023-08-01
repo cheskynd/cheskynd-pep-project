@@ -50,12 +50,25 @@ public class SocialMediaController {
     
         Account account = context.bodyAsClass(Account.class);
         Account newAccount = aService.createAccount(account);
+
+        if(newAccount != null){
+            context.status(200);
+            context.json(newAccount);
+        }{
+            context.status(400);
+        }
         
 
     }
     private void login(Context context){
         Account account = context.bodyAsClass(Account.class);
         Account accountInfo = aService.createAccount(account);
+        if(accountInfo != null){
+            context.status(200);
+            context.json(accountInfo);
+        }{
+            context.status(401);
+        }       
         
        //TODO: Finish LoginHandler
     }
@@ -77,13 +90,13 @@ public class SocialMediaController {
     }
     private void getMessageByID(Context context){
         int message_id = Integer.parseInt(context.pathParam("message_id"));
-        Message retrivedMessage = mService.getMessageById(message_id);
+        context.json(mService.getMessageById(message_id));
 
     }
     private void updateMessageByMessageID(Context context){
         int message_id = Integer.parseInt(context.pathParam("message_id"));
         String change = context.body();
-        // Message updatedMessage = mService.updateMessage(change);
+        Message updatedMessage = mService.updateMessage(message_id,change);
     }
 
     private void getMessageByUserID(Context context){
