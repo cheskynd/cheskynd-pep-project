@@ -13,7 +13,7 @@ public class AccountService {
         this.accountDAO = accountDAO;
     }
 
-    public Account addAccount(Account account){
+    public Account createAccount(Account account){
         return accountDAO.insertAccount(account);
     }
 

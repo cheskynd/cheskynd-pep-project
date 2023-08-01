@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.Account;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -16,7 +17,15 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
-        app.get("registration", this::exampleHandler);
+        app.post("/register", this::register);
+        app.post("/login",this::login);
+        app.post("/messages",this::createMessage);
+        app.get("/messages",this::getAllMessages);
+        app.get("/messages/{message_id}", this::getMessageByID);
+        app.get("/accounts/{account_id}/messages",this::getMessageByUserID);
+        app.delete("/messages/{message_id}", this::deleteMessage);
+        app.patch("/messages/{message_id}",this::updateMessageByMessageID);
+        
 
         return app;
     }
@@ -26,8 +35,34 @@ public class SocialMediaController {
      * This is an example handler for an example endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
-    private void exampleHandler(Context context) {
+    private void register(Context context) {
+        // Account newAccount = 
+
+        //TODO: Finish RegisterHandler
         context.json("sample text");
+    }
+    private void login(Context context){
+       //TODO: Finish LoginHandler
+    }
+    private void createMessage(Context context){
+        //TODO: Finish the CreateMessage
+    }
+    private void deleteMessage(Context context){
+        //TODO: Finish method
+
+    }
+    private void getAllMessages(Context context){
+        //TODO: Finish the getAllMessage
+    }
+    private void getMessageByID(Context context){
+
+    }
+    private void updateMessageByMessageID(Context context){
+
+    }
+
+    private void getMessageByUserID(Context context){
+
     }
 
 

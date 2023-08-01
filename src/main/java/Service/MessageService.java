@@ -27,7 +27,7 @@ public class MessageService {
 
 
     public Message updateMessage(Message message){
-        return messageDAO.updateMessageById(message.getMessage_id(), message.getMessage_text())
+        return messageDAO.updateMessageById(message.getMessage_id(), message.getMessage_text());
     }
 
     public Message getMessageById(int id){
