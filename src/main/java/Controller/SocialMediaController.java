@@ -103,8 +103,15 @@ public class SocialMediaController {
     }
     private void updateMessageByMessageID(Context context){
         int message_id = Integer.parseInt(context.pathParam("message_id"));
+        int count = mService.getMessageCount(message_id);
         String change = context.body();
-        Message updatedMessage = mService.updateMessage(message_id,change);
+        if (change.length() < 255 && count>0){
+            Message updatedMessage = mService.updateMessage(message_id,change);
+            context.json(updatedMessage);
+            context.status(200);
+        }else{
+            context.status(400);
+        }
     }
 
     private void getMessageByUserID(Context context){

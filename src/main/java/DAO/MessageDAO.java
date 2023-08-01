@@ -105,11 +105,27 @@ public class MessageDAO {
         }
     } 
 
+    public int getMessageIDCount(int id){
+        Connection connection = ConnectionUtil.getConnection();
+        int count = 0;
+        try{
+            String sql = "SELECT * FROM message where message_id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                count++;
+            }
+
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return count;
+
+    }
+
     public Message updateMessageById(int id, String newMessage){
 
-        if (newMessage == null || newMessage.length() > 255){
-            return null;
-        }
         Connection connection = ConnectionUtil.getConnection();
         try {
                 String sql = "SELECT * FROM message where message_id = ?";

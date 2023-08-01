@@ -45,7 +45,8 @@ public class MessageService {
         return messageDAO.getAllMessages();
     }
 
-
-
+    public int getMessageCount(int id){
+        return messageDAO.getMessageIDCount(id);
+    }
     
 }
