@@ -64,9 +64,10 @@ public class SocialMediaController {
         Account account = context.bodyAsClass(Account.class);
         Account accountInfo = aService.createAccount(account);
         if(accountInfo != null){
-            context.status(200);
             context.json(accountInfo);
-        }{
+            context.status(200);
+
+        }else{
             context.status(401);
         }       
         
@@ -74,8 +75,15 @@ public class SocialMediaController {
     }
     private void createMessage(Context context){
         Message message = context.bodyAsClass(Message.class);
-        Message newMessage = mService.insertMessage(message);
-        //TODO: Finish the CreateMessage
+        int messageLength = message.message_text.length();
+
+
+        if(message != null && messageLength > 255){
+            Message newMessage = mService.insertMessage(message);
+            context.json(newMessage);
+            context.status(200);
+        }else{context.status(400);}
+
     }
     private void deleteMessage(Context context){
         
