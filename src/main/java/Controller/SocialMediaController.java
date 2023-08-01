@@ -49,9 +49,11 @@ public class SocialMediaController {
     private void register(Context context) {
     
         Account account = context.bodyAsClass(Account.class);
+        int passLength = account.getPassword().length();
+        String uName = account.getUsername();
         Account newAccount = aService.createAccount(account);
 
-        if(newAccount != null){
+        if(uName != null && passLength >= 4){
             context.status(200);
             context.json(newAccount);
         }{
@@ -62,7 +64,7 @@ public class SocialMediaController {
     }
     private void login(Context context){
         Account account = context.bodyAsClass(Account.class);
-        Account accountInfo = aService.createAccount(account);
+        Account accountInfo = aService.login(account.getUsername(),account.getPassword());
         if(accountInfo != null){
             context.json(accountInfo);
             context.status(200);
@@ -98,7 +100,13 @@ public class SocialMediaController {
     }
     private void getMessageByID(Context context){
         int message_id = Integer.parseInt(context.pathParam("message_id"));
-        context.json(mService.getMessageById(message_id));
+        Message message = mService.getMessageById(message_id);
+        if(message != null){
+            context.json(message);
+            context.status(200);}
+        else{
+            context.status(200);
+        }
 
     }
     private void updateMessageByMessageID(Context context){
@@ -117,6 +125,7 @@ public class SocialMediaController {
     private void getMessageByUserID(Context context){
         int message_id = Integer.parseInt(context.pathParam("account_id"));
         context.json(mService.getMessageByUserId(message_id));
+        context.status(200);
     }
 
 
