@@ -15,9 +15,23 @@ public class AccountService {
         this.accountDAO = accountDAO;
     }
 
-    public Account createAccount(Account account){
-        return accountDAO.insertAccount(account);
+    public Account createAccount(String userName, String password){
+        return accountDAO.insertAccount(userName,password);
+
     }
+
+    public boolean accountExists(String userName){
+        List<Account> accounts= accountDAO.getAllAccounts(); 
+        for(Account account:accounts){
+
+            if(account.getUsername().equals(userName)){
+                return true;
+            } 
+        }return false;
+
+    }
+
+
     public Account login(String userName, String password){
         List<Account> accounts= accountDAO.getAllAccounts(); 
         for(Account account:accounts){

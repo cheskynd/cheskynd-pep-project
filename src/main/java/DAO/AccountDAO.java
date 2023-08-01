@@ -38,20 +38,20 @@ public class AccountDAO {
         return accounts;
     }
 
-    public Account insertAccount(Account account){
+    public Account insertAccount(String userName, String password){
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "INSERT INTO account (username, password) values ?,?;";
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, account.getUsername());
-            ps.setString(2,account.getPassword());
+            ps.setString(1, userName);
+            ps.setString(2, password);
 
             ps.executeUpdate();
             ResultSet pkeyResultSet = ps.getGeneratedKeys();
 
             if(pkeyResultSet.next()){
                 int generated_account_id = (int) pkeyResultSet.getLong(1);
-                return new Account(generated_account_id, account.getUsername(), account.getPassword());
+                return new Account(generated_account_id, userName, password);
             }
 
         } catch (SQLException e) {

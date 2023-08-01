@@ -1,5 +1,4 @@
 package Service;
-import static org.mockito.ArgumentMatchers.refEq;
 
 import java.util.List;
 
@@ -47,6 +46,10 @@ public class MessageService {
 
     public int getMessageCount(int id){
         return messageDAO.getMessageIDCount(id);
+    }
+
+    public int getPostedByCount(int id){
+        return messageDAO.getPostedByCount(id);
     }
     
 }

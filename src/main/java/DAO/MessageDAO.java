@@ -124,6 +124,26 @@ public class MessageDAO {
 
     }
 
+
+    public int getPostedByCount(int id){
+        Connection connection = ConnectionUtil.getConnection();
+        int count = 0;
+        try{
+            String sql = "SELECT * FROM message where posted_by = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                count++;
+            }
+
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return count;
+
+    }
+
     public Message updateMessageById(int id, String newMessage){
 
         Connection connection = ConnectionUtil.getConnection();
