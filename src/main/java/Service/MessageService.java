@@ -1,4 +1,6 @@
 package Service;
+import static org.mockito.ArgumentMatchers.refEq;
+
 import java.util.List;
 
 import DAO.MessageDAO;
@@ -37,6 +39,10 @@ public class MessageService {
 
     public void deleteMessageById(int id){
         messageDAO.deleteMessageById(id);
+    }
+
+    public List<Message> getAllMessages(){
+        return messageDAO.getAllMessages();
     }
 
 
