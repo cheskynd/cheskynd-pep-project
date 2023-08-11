@@ -11,7 +11,7 @@ import Model.Account;
 import Util.ConnectionUtil;
 
 public class AccountDAO {
-
+ 
     /**
      *  Used to get all of the accounts saved in the database
      * @return List of all accounts 
