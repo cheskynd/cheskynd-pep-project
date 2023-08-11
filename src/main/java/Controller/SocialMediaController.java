@@ -13,8 +13,8 @@ import io.javalin.http.Context;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
-    private MessageService mService = new MessageService();
-    private AccountService aService = new AccountService();
+    private MessageService messageService = new MessageService();
+    private AccountService accountService = new AccountService();
 
 
     /**
@@ -34,36 +34,48 @@ public class SocialMediaController {
         app.get("/accounts/{account_id}/messages",this::getMessageByUserID);
         app.delete("/messages/{message_id}", this::deleteMessage);
         app.patch("/messages/{message_id}",this::updateMessageByMessageID);
-        
-
         return app;
     }
 
 
     /**
-     * This is an example handler for an example endpoint.
+     * this handler is used to register an account
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
     private void register(Context context) {
     
         Account account = context.bodyAsClass(Account.class);
         String password = account.getPassword();
-        String uName = account.getUsername();
-        boolean exists = aService.accountExists(uName);
+        String username = account.getUsername();
 
-        if(uName != null && password.length() >= 4 && !uName.isBlank() && exists== false){
-            Account newAccount = aService.createAccount(uName,password);
-            if (newAccount != null){
-            context.status(200);}
-            context.json(newAccount);
-        }else {
+        if (username == null || username.isBlank() || password.length() < 4){
             context.status(400);
+            return;
         }
+
+        boolean exists = accountService.usernameExist(username);
+        if(exists){
+            context.status(400);
+            return;
+        }
+
+
+        Account newAccount = accountService.createAccount(username,password);
+        if (newAccount != null){
+                context.status(200);
+                context.json(newAccount);
+            }else {
+                context.status(400);
+            }
     }
 
+    /**
+     * This handler is needed to allow a user to login
+     * @param context
+     */
     private void login(Context context){
         Account account = context.bodyAsClass(Account.class);
-        Account accountInfo = aService.login(account.getUsername(),account.getPassword());
+        Account accountInfo = accountService.login(account.getUsername(),account.getPassword());
         if(accountInfo != null){
             context.json(accountInfo);
             context.status(200);
@@ -71,19 +83,20 @@ public class SocialMediaController {
         }else{
             context.status(401);
         }       
-        
-       //TODO: Finish LoginHandler
     }
 
+    /**
+     * This handler is used to create messages
+     * @param context
+     */
     private void createMessage(Context context){
         Message message = context.bodyAsClass(Message.class);
 
-        if(message != null && message.getMessage_text().length() > 255 && !message.getMessage_text().isBlank()){
+        if(message != null && message.getMessage_text().length() < 255 && !message.getMessage_text().isBlank()){
 
-            int postedByCount = mService.getPostedByCount(message.getPosted_by());
-
+            int postedByCount = messageService.getPostedByCount(message.getPosted_by());
             if(postedByCount > 0){
-                Message newMessage = mService.insertMessage(message);
+                Message newMessage = messageService.insertMessage(message);
                 if(newMessage != null){
                     context.json(newMessage);
                     context.status(200);}
@@ -95,9 +108,9 @@ public class SocialMediaController {
     private void deleteMessage(Context context){
         
         int message_id = Integer.parseInt(context.pathParam("message_id"));
-        Message message = mService.getMessageById(message_id);
+        Message message = messageService.getMessageById(message_id);
         if(message!=null){
-            mService.deleteMessageById(message_id);
+            messageService.deleteMessageById(message_id);
             context.json(message);
             context.status(200);}
         else{
@@ -107,12 +120,12 @@ public class SocialMediaController {
     }
 
     private void getAllMessages(Context context){
-        context.json(mService.getAllMessages());
+        context.json(messageService.getAllMessages());
     }
 
     private void getMessageByID(Context context){
         int message_id = Integer.parseInt(context.pathParam("message_id"));
-        Message message = mService.getMessageById(message_id);
+        Message message = messageService.getMessageById(message_id);
         if(message != null){
             context.json(message);
             context.status(200);}
@@ -125,12 +138,12 @@ public class SocialMediaController {
 
     private void updateMessageByMessageID(Context context){
          int message_id = Integer.parseInt(context.pathParam("message_id"));
-        Message existingMessage = mService.getMessageById(message_id); 
+        Message existingMessage = messageService.getMessageById(message_id); 
         if (existingMessage != null) { 
             Message Nmessage = context.bodyAsClass(Message.class); 
             String newMessageText = Nmessage.getMessage_text(); 
             if (!newMessageText.isBlank() && newMessageText.length() < 255) { 
-                Message updatedMessage = mService.updateMessage(message_id, newMessageText); 
+                Message updatedMessage = messageService.updateMessage(message_id, newMessageText); 
                 if (updatedMessage != null) { context.json(updatedMessage);
                      context.status(200); } 
                     else { context.status(400); } 
@@ -141,8 +154,8 @@ public class SocialMediaController {
             }
 
     private void getMessageByUserID(Context context){
-        int message_id = Integer.parseInt(context.pathParam("account_id"));
-        context.json(mService.getMessageByUserId(message_id));
+        int account_id = Integer.parseInt(context.pathParam("account_id"));
+        context.json(messageService.getMessageByUserId(account_id));
         context.status(200);
     }
 

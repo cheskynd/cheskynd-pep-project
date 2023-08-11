@@ -12,14 +12,10 @@ import Util.ConnectionUtil;
 
 public class AccountDAO {
 
-    /*
-     * create table account (
-    account_id int primary key auto_increment,
-    username varchar(255) unique,
-    password varchar(255)
-        );
+    /**
+     * 
+     * @return List of all accounts 
      */
-
     public List<Account>getAllAccounts(){
         Connection connection = ConnectionUtil.getConnection();
         List<Account> accounts = new ArrayList<>();
@@ -37,11 +33,16 @@ public class AccountDAO {
         }
         return accounts;
     }
-
+    /**
+     * 
+     * @param userName The username for a new account
+     * @param password The password for a new account
+     * @return Returns a new account
+     */
     public Account insertAccount(String userName, String password){
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "INSERT INTO account (username, password) values ?,?;";
+            String sql = "INSERT INTO account (username, password) values (?,?);";
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, userName);
             ps.setString(2, password);
@@ -50,7 +51,7 @@ public class AccountDAO {
             ResultSet pkeyResultSet = ps.getGeneratedKeys();
 
             if(pkeyResultSet.next()){
-                int generated_account_id = (int) pkeyResultSet.getLong(1);
+                int generated_account_id = pkeyResultSet.getInt(1);
                 return new Account(generated_account_id, userName, password);
             }
 
@@ -59,5 +60,40 @@ public class AccountDAO {
         }
         return null;
     }
+
     
+    public boolean accountExists(String userName){
+        Connection connection = ConnectionUtil.getConnection();
+        String sql = "SELECT * FROM account WHERE username = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1,userName);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * 
+     */
+    public boolean accountExists(int account_id){
+        Connection connection = ConnectionUtil.getConnection();
+        String sql = "SELECT * FROM account WHERE account_id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1,account_id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
 }
