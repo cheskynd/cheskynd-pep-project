@@ -40,7 +40,7 @@ public class AccountService {
      *  This method is used in logging to an account
      * @param userName The username for a new account
      * @param password The password for a new account
-     * @return a new account
+     * @return a new account object 
      */
     public Account login(String userName, String password){
         List<Account> accounts= accountDAO.getAllAccounts(); 

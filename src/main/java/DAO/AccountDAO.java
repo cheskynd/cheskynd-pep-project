@@ -13,7 +13,7 @@ import Util.ConnectionUtil;
 public class AccountDAO {
 
     /**
-     * 
+     *  Used to get all of the accounts saved in the database
      * @return List of all accounts 
      */
     public List<Account>getAllAccounts(){
@@ -33,8 +33,10 @@ public class AccountDAO {
         }
         return accounts;
     }
+
+
     /**
-     * 
+     * Used to insert a new account in the database
      * @param userName The username for a new account
      * @param password The password for a new account
      * @return Returns a new account
@@ -61,7 +63,11 @@ public class AccountDAO {
         return null;
     }
 
-    
+    /**
+     * Checks if an account exists in the database by using a username.
+     * @param userName username used to check of its existance in the database.
+     * @return true/false
+     */
     public boolean accountExists(String userName){
         Connection connection = ConnectionUtil.getConnection();
         String sql = "SELECT * FROM account WHERE username = ?";
@@ -78,22 +84,4 @@ public class AccountDAO {
         return false;
     }
 
-    /**
-     * 
-     */
-    public boolean accountExists(int account_id){
-        Connection connection = ConnectionUtil.getConnection();
-        String sql = "SELECT * FROM account WHERE account_id = ?";
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1,account_id);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()){
-                return rs.next();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return false;
-    }
 }

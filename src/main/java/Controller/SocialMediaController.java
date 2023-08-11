@@ -7,19 +7,14 @@ import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
-/**
- * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
- * found in readme.md as well as the test cases. You should
- * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
- */
+
 public class SocialMediaController {
     private MessageService messageService = new MessageService();
     private AccountService accountService = new AccountService();
 
 
     /**
-     * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
-     * suite must receive a Javalin object from this method.
+     * Configurations of all the endpoints
      * @return a Javalin app object which defines the behavior of the Javalin controller.
      */
 
@@ -101,14 +96,20 @@ public class SocialMediaController {
                     context.json(newMessage);
                     context.status(200);}
                 else{context.status(400);}
+
             }else{context.status(400);}
+
         }else{context.status(400);}
     }
     
+    /**
+     * Handler to delete a message
+     */
     private void deleteMessage(Context context){
         
         int message_id = Integer.parseInt(context.pathParam("message_id"));
         Message message = messageService.getMessageById(message_id);
+
         if(message!=null){
             messageService.deleteMessageById(message_id);
             context.json(message);
@@ -119,6 +120,10 @@ public class SocialMediaController {
 
     }
 
+    /**
+     * Handler to getAllMessages
+     * @param context
+     */
     private void getAllMessages(Context context){
         context.json(messageService.getAllMessages());
     }
@@ -135,24 +140,34 @@ public class SocialMediaController {
 
     }
 
-
+    /**
+     * Handler to update a message
+     */
     private void updateMessageByMessageID(Context context){
-         int message_id = Integer.parseInt(context.pathParam("message_id"));
+
+        int message_id = Integer.parseInt(context.pathParam("message_id"));
         Message existingMessage = messageService.getMessageById(message_id); 
+
         if (existingMessage != null) { 
             Message Nmessage = context.bodyAsClass(Message.class); 
             String newMessageText = Nmessage.getMessage_text(); 
+
             if (!newMessageText.isBlank() && newMessageText.length() < 255) { 
                 Message updatedMessage = messageService.updateMessage(message_id, newMessageText); 
+
                 if (updatedMessage != null) { context.json(updatedMessage);
                      context.status(200); } 
+                     
                     else { context.status(400); } 
                 } else { context.status(400); }
-
             } 
                 else { context.status(400); } 
             }
 
+    /**
+     * Handler to get a message by the user id
+     * @param context
+     */
     private void getMessageByUserID(Context context){
         int account_id = Integer.parseInt(context.pathParam("account_id"));
         context.json(messageService.getMessageByUserId(account_id));
